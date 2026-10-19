@@ -7,7 +7,7 @@ import { Navbar } from '../components/Navbar';
 import { SearchForm } from '../components/SearchForm';
 import { ItemList } from '../components/ItemList';
 import { ItemDetails } from '../components/ItemDetails';
-import { Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw, Heart } from 'lucide-react';
 
 const PAGE_LIMIT = 24;
 
@@ -73,7 +73,7 @@ export function Home() {
           triggerToast(`${pokemon.displayName} removido dos favoritos.`);
           return prevFavorites.filter((id) => id !== pokemon.id);
         } else {
-          triggerToast(`★ ${pokemon.displayName} adicionado aos favoritos!`);
+          triggerToast(`${pokemon.displayName} adicionado aos favoritos!`);
           return [...prevFavorites, pokemon.id];
         }
       });
@@ -81,7 +81,7 @@ export function Home() {
     [setFavorites]
   );
 
-  // Busca direta na API caso o usuário digite um Pokémon que ainda não foi carregado na página
+  // Busca direta na API caso o usuário busque por um Pokémon ainda não carregado
   useEffect(() => {
     const cleanSearch = debouncedSearchTerm.trim().toLowerCase();
     if (!cleanSearch) return;
@@ -105,7 +105,7 @@ export function Home() {
           });
         }
       } catch {
-        // Pokémon não encontrado na busca direta, filtragem local cuidará do empty state
+        // Pokémon não encontrado na busca direta; filtragem cuidará do estado vazio
       }
     }
 
@@ -133,7 +133,7 @@ export function Home() {
       });
       setOffset(nextOffset);
       setHasMore(Boolean(response.next));
-    } catch (err) {
+    } catch {
       triggerToast('Erro ao carregar mais Pokémon.');
     } finally {
       setLoadingMore(false);
@@ -195,11 +195,11 @@ export function Home() {
   }, [allPokemons, onlyFavorites, favorites, selectedType, debouncedSearchTerm, sortBy]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-rose-500 selection:text-white">
-      {/* Toast Notificação Flutuante */}
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+      {/* Toast Notificação Simples */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 border border-rose-500/50 text-white px-5 py-3 rounded-2xl shadow-2xl shadow-rose-500/20 text-xs font-bold animate-in fade-in slide-in-from-bottom-4 flex items-center gap-2.5 backdrop-blur-md">
-          <Sparkles className="w-4 h-4 text-rose-400" />
+        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 border border-slate-700 text-white px-4 py-2.5 rounded-lg shadow-lg text-xs font-medium flex items-center gap-2">
+          <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -213,44 +213,33 @@ export function Home() {
       />
 
       {/* Conteúdo Principal */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Banner Hero Apresentação */}
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-rose-950/40 via-slate-900 to-indigo-950/40 border border-slate-800/80 p-8 sm:p-10 mb-8 shadow-2xl backdrop-blur-sm">
-          <div className="absolute -top-24 -left-24 w-72 h-72 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-          <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold mb-3">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Avaliação Prática AP2 • React & PokéAPI</span>
-            </div>
-
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-3">
-              Explore o Universo Pokémon
-            </h2>
-
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              Consulte atributos, fraquezas, áudio oficial de grito e estatísticas em tempo real com consumo direto da PokéAPI REST, gerenciamento de estado e Tailwind CSS.
-            </p>
-          </div>
-        </section>
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Título da Página Simples e Direto */}
+        <div className="mb-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            Explorar Pokémon
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            Consulte características, tipos elementais, atributos base e vocalizações oficiais consumidas da PokéAPI.
+          </p>
+        </div>
 
         {/* Alerta de Erro de Requisição (caso a API falhe) */}
         {apiError && (
-          <div className="bg-rose-950/40 border border-rose-500/40 rounded-2xl p-6 mb-8 text-rose-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="bg-rose-950/40 border border-rose-800 rounded-xl p-4 mb-6 text-rose-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
             <div className="flex items-center gap-3">
-              <AlertCircle className="w-6 h-6 text-rose-400 shrink-0" />
+              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
               <div>
-                <h4 className="font-bold text-sm">Falha na conexão com a PokéAPI</h4>
-                <p className="text-xs text-rose-300/90">{apiError}</p>
+                <p className="font-semibold text-rose-200">Falha ao conectar com a PokéAPI</p>
+                <p className="text-rose-300/80">{apiError}</p>
               </div>
             </div>
             <button
               type="button"
               onClick={refetch}
-              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer"
+              className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
             >
-              <RefreshCw className="w-3.5 h-3.5" /> Tentar Novamente
+              <RefreshCw className="w-3.5 h-3.5" /> Tentar novamente
             </button>
           </div>
         )}
@@ -295,14 +284,14 @@ export function Home() {
         />
       )}
 
-      {/* Rodapé Acadêmico */}
-      <footer className="border-t border-slate-900 bg-slate-950/80 py-8 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* Rodapé Simples e Honesto */}
+      <footer className="border-t border-slate-800 bg-slate-900/60 py-6 text-center text-xs text-slate-400 mt-12">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>
-            Trabalho de Avaliação Prática (AP2) • Faculdade de Análise e Desenvolvimento de Sistemas (ADS)
+            Trabalho de Avaliação Prática (AP2) • Análise e Desenvolvimento de Sistemas
           </p>
-          <p className="text-slate-400">
-            Powered by <strong className="text-rose-400">PokéAPI</strong> &amp; <strong className="text-rose-400">Tailwind CSS</strong>
+          <p>
+            Dados fornecidos pela <a href="https://pokeapi.co/" target="_blank" rel="noreferrer" className="text-slate-300 hover:text-white underline">PokéAPI</a>
           </p>
         </div>
       </footer>
